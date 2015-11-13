@@ -80,7 +80,7 @@ $ roslaunch roswifibot rviz.launch
 
 Troubleshooting
 ---------------
-### **Problem**:
+### **Problem**: roscore error.
   When you launch
   $ roscore
 
@@ -94,10 +94,9 @@ Troubleshooting
   $ sudo apt-get install python-rospkg
 
 
-### **Problem**:
-  Acces denied to devices (robot or Hokuyo).
+### **Problem**: Acces denied to devices (robot or Hokuyo).
 
-Solution
+**Solution**:
   $ sudo chmod a+rwx /dev/ttyS* /dev/ttyACM*
 
 
@@ -107,7 +106,7 @@ Solution
   returns less than 100Hz.
   Topic "/odom" is not published.
 
-Cause:
+**Cause**:
   Another executable is already connected with the robot.
 
 **Solution**:
@@ -118,14 +117,13 @@ Cause:
   Then stop and relaunch the launch file.
 
 
-### **Problem**:
-  Firewire camera is not recognized.
+### **Problem**: Firewire camera is not recognized.
 
 **Solution**:
   Run "coriander" and check camera is recognized.
 
 
-### **Problem**:
+### **Problem**: Hokuyo laser range finder dies.
   When launching "wifibot_node", the Hokyuo device is suddenly turned off,
   (or  any other plugged on the robot);
   the device "/dev/ttyACM0" disappears
