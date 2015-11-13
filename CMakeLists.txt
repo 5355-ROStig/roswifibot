@@ -1,0 +1,1 @@
+/home/arnaud/catkin_ws/src/roswifibot/cmake/CMakeLists_catkin.txt
