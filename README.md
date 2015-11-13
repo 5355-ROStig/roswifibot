@@ -49,6 +49,7 @@ $ catkin_make --only-pkg-with-deps roswifibot
 Compile with rosmake (older versions of ROS, for instance fuerte):
 
 $ cd cmake ; bash package2rosmake.bash
+
 $ rosmake roswifibot
 
 Note: to revert the package back to catkin-compliant:
