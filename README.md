@@ -80,7 +80,7 @@ $ roslaunch roswifibot rviz.launch
 
 Troubleshooting
 ---------------
---- Problem:
+### **Problem**:
   When you launch
   $ roscore
 
@@ -88,21 +88,20 @@ Troubleshooting
   Param xml is <param command="rosversion ros" name="rosversion"/>
   Invalid <param> tag: Cannot load command parameter [rosversion]: command [rosversion ros] returned with code [1].
 
-Solution:
+**Solution**:
   http://answers.ros.org/question/44996/cannot-run-roscore-due-to-error-in-rosversion/
 
   $ sudo apt-get install python-rospkg
 
 
---- Problem:
+### **Problem**:
   Acces denied to devices (robot or Hokuyo).
 
 Solution
   $ sudo chmod a+rwx /dev/ttyS* /dev/ttyACM*
 
 
---- Problem:
-  Connexion with the robot is slow (several seconds).
+### **Problem**: Connexion with the robot is slow (several seconds).
   Few TF messages:
     "$ rostopic hz"
   returns less than 100Hz.
@@ -111,7 +110,7 @@ Solution
 Cause:
   Another executable is already connected with the robot.
 
-Solution:
+**Solution**:
   kill all processes "robot_server*".
   Run:
     $ ps aux | grep robot_server
@@ -119,19 +118,19 @@ Solution:
   Then stop and relaunch the launch file.
 
 
---- Problem:
+### **Problem**:
   Firewire camera is not recognized.
 
-Solution:
+**Solution**:
   Run "coriander" and check camera is recognized.
 
 
---- Problem:
+### **Problem**:
   When launching "wifibot_node", the Hokyuo device is suddenly turned off,
   (or  any other plugged on the robot);
   the device "/dev/ttyACM0" disappears
 
-Solution:
+**Solution**:
   http://wiki.ros.org/hokuyo_node/Troubleshooting
   The problem is in fact linked with the electrical relays of the Wifibot.
   The orders sent to the robot can cut off the relays
