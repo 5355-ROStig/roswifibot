@@ -81,6 +81,17 @@ $ roslaunch roswifibot rviz.launch
 
 Troubleshooting
 ---------------
+### ***Problemm***: compilation error
+  When you launch 
+  $ catkin-make
+  you obtain a message as:
+  "roswifibot-master/msg/Status.msg: [roswifibot-master/Status] is not a legal type name"
+  or
+  "ERROR: package name 'roswifibot-master' is illegal and cannot be used in message generation."
+  
+**Solution**:
+  You must rename you package folder to "roswifibot", not "roswifibot-master".
+
 ### **Problem**: roscore error.
   When you launch
   $ roscore
