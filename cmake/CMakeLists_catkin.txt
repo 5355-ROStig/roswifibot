@@ -25,6 +25,10 @@ include_directories(
 add_library(libwifibot               src/libwifibot.cpp)
 add_executable(wifibot_node          src/wifibot.cpp)
 target_link_libraries(wifibot_node   ${catkin_LIBRARIES} libwifibot)
+add_dependencies     (wifibot_node
+  ${PROJECT_NAME}_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
+)
 ### 8 - Tests to build (catkin_add_gtest())
 # Nothing in this package
 ### 9 - Install rules (install())
