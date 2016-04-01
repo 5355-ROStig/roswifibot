@@ -1,0 +1,6 @@
+<launch>
+<node pkg="roswifibot" type="hokuyo_getID_then_driver.sh" name="hokuyo_node"
+      respawn="true"/>
+<node pkg="tf" type="static_transform_publisher" name="laser2base_broadcaster" output="screen"
+      args="0.2 0 0.15  0 0 0  /base_frame /laser 100" />
+</launch>
