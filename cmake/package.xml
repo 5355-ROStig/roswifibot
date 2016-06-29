@@ -14,11 +14,9 @@
   <license>BSD</license>
   <!-- dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>geometry_msgs</depend>
-  <depend>nav_msgs</depend>
-  <depend>roscpp</depend>
-  <depend>rospy</depend>
+  <depend>message_generation</depend>
   <depend>std_msgs</depend>
+  <depend>roscpp</depend>
   <depend>tf</depend>
   <export>
     <rosdoc config="rosdoc.yaml" /> <!-- http://wiki.ros.org/rosdoc_lite -->
