@@ -1,6 +1,6 @@
 /*
  * libwifibot.cpp
- * 
+ *
  * Copyright (c) 2012, Jean Charles Mammana. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,10 +21,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <termios.h> 
+#include <termios.h>
 #include <unistd.h>
 #include <iostream>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
 #include <stdint.h>
@@ -44,17 +44,17 @@ static int _crc(BYTE *adresse, int taille_max)
   int cptOctet = 0;
   int cptBit = 0;
   int parity = 0;
-  
+
   for (cptOctet = 0; cptOctet < taille_max ; cptOctet++)
     {
       crc ^= *(adresse + cptOctet);
-      
+
       for (cptBit = 0; cptBit <= 7 ; cptBit++)
-	{
-	  parity = crc;
-	  crc >>= 1;
-	  if (parity % 2 == true) crc ^= polynome;
-	}
+  {
+    parity = crc;
+    crc >>= 1;
+    if (parity % 2 == true) crc ^= polynome;
+  }
     }
   return(crc);
 }
@@ -100,7 +100,7 @@ static void _hexdump(const T *data, int size)
       snprintf(addrstr, sizeof(addrstr), "%.4x",
                ((unsigned int)p-(unsigned int)data) );
     }
-            
+
     c = *p;
     if (isalnum(c) == 0) {
       c = '.';
@@ -114,7 +114,7 @@ static void _hexdump(const T *data, int size)
     snprintf(bytestr, sizeof(bytestr), "%c", c);
     strncat(charstr, bytestr, sizeof(charstr)-strlen(charstr)-1);
 
-    if(n%16 == 0) { 
+    if(n%16 == 0) {
       /* line completed */
       printf("[%4.4s]   %-50.50s  %s\n", addrstr, hexstr, charstr);
       hexstr[0] = 0;
@@ -145,9 +145,9 @@ namespace wifibot
   Serial::Serial()
     : _handle (0)
   {
-    
+
   }
-  
+
   Serial::~Serial()
   {
     close();
@@ -165,16 +165,16 @@ namespace wifibot
     bitrate = (baudrate == 9600) ? B9600 : (baudrate == 19200) ? B19200 : 0;
     if (!bitrate)
       {
-	std::cerr << "ERROR : Serial " << baudrate << " baudrate unsupported!" << std::endl;
-	return false;
+  std::cerr << "ERROR : Serial " << baudrate << " baudrate unsupported!" << std::endl;
+  return false;
       }
 
     _handle = ::open(device.c_str(), O_RDWR | O_NOCTTY);
 
     if (_handle < 0)
       {
-	_handle = 0;
-	return false;
+  _handle = 0;
+  return false;
       }
 
     tcgetattr(_handle, &options);
@@ -216,7 +216,7 @@ namespace wifibot
   {
     if (!_handle)
       return false;
-    
+
     //_hexdump(pBuffer, size);
 
     *pHasRead = ::read(_handle, pBuffer, size);
@@ -248,19 +248,19 @@ namespace wifibot
     fd_set rfds;
     struct timeval tv;
     int retval;
-    
+
     FD_ZERO(&rfds);
     FD_SET(_handle, &rfds);
-    
+
     tv.tv_sec = timeout / 1000;
     tv.tv_usec = (timeout * 1000) - (tv.tv_sec * 1000 * 1000);
     retval = select(_handle + 1, &rfds, NULL, NULL, &tv);
     if (retval > 0)
       return true;
-    
+
     if (retval == 0)
       return false;
-    
+
     return false;
   }
 
@@ -272,7 +272,7 @@ namespace wifibot
     , _loopControlSpeed (50)
   {
     for (int i = 0; i < W_RELAYS_NUMBER; i++)
-      _pRelays[i] = false;
+      _pRelays[i] = true; // change to activate the relays
 
     fillHeader();
   }
@@ -318,8 +318,8 @@ namespace wifibot
     _data.odometryRight =    (p[16] << 24) + (p[15] << 16) + (p[14] << 8) + (p[13]);
 
     _data.current =          (int)p[17] * 0.194 - 37.5; // Need to know the formula ...
-    _data.version =          p[18]; 
-    
+    _data.version =          p[18];
+
     if (_data.speedFrontLeft > 0x7fff)
       _data.speedFrontLeft = _data.speedFrontLeft - 0xffff;
 
@@ -372,6 +372,13 @@ namespace wifibot
       _pRelays[i] = pRelays[i];
   }
 
+  void Protocol::getRelays(bool & r1, bool & r2, bool & r3) const
+  {
+    r1 = _pRelays[0];
+    r2 = _pRelays[1];
+    r3 = _pRelays[2];
+  }
+
   bool Protocol::setSpeeds(double left, double right)
   {
     //    int16 sl = (left * _loopControlSpeed * _ticsPerMeter) / 1000.0;
@@ -386,8 +393,8 @@ namespace wifibot
 
     if (_loopControl)
       {
-	c += 0x80;                // [10000000b] = control loop for left wheel
-	c += 0x20;                // [00100000b] = control loop for right wheel
+  c += 0x80;                // [10000000b] = control loop for left wheel
+  c += 0x20;                // [00100000b] = control loop for right wheel
       }
 
     if (sl > 0)
@@ -471,9 +478,9 @@ namespace wifibot
   {
     for (int i = 0; i < size; i++)
       {
-	_pBuffer[_bufferIndex++] = pBuffer[i];
-	if (_bufferIndex == _bufferSize)
-	  _bufferIndex = 0;
+  _pBuffer[_bufferIndex++] = pBuffer[i];
+  if (_bufferIndex == _bufferSize)
+    _bufferIndex = 0;
       }
   }
 
@@ -483,23 +490,23 @@ namespace wifibot
 
     for (int i = 0; i < _bufferSize; i++)
       {
-	if (b < 0) b = _bufferSize - 1;
+  if (b < 0) b = _bufferSize - 1;
 
-	if (_pBuffer[b] == 0xff)
-	  {
-	    for (int j = 0; j < _frameSize; j++)
-	      {
-		pFrame[j] = _pBuffer[(b + j) % _bufferSize];
-	      }
+  if (_pBuffer[b] == 0xff)
+    {
+      for (int j = 0; j < _frameSize; j++)
+        {
+    pFrame[j] = _pBuffer[(b + j) % _bufferSize];
+        }
 
-	    uint16 rcrc = (pFrame[_frameSize - 1] << 8) + pFrame[_frameSize - 2];
-	    uint16 ccrc = _crc(pFrame + 1, _frameSize - 3);
+      uint16 rcrc = (pFrame[_frameSize - 1] << 8) + pFrame[_frameSize - 2];
+      uint16 ccrc = _crc(pFrame + 1, _frameSize - 3);
 
-	    if (rcrc == ccrc)
-	      return true;
-	  }
-	b--;
-      } 
+      if (rcrc == ccrc)
+        return true;
+    }
+  b--;
+      }
 
     return false;
   }
@@ -527,27 +534,27 @@ namespace wifibot
 
     while (42)
       {
-	// If no data is received within 1sec, exit.
-	if (!_serial.timeout(1000))
-	  {	
-	    std::cerr << "Error during serial.timeout" << std::endl;
-	    return false;
-	  }
+  // If no data is received within 1sec, exit.
+  if (!_serial.timeout(1000))
+    {
+      std::cerr << "Error during serial.timeout" << std::endl;
+      return false;
+    }
 
-	BYTE buffer[32];
-	// If an error occures on the serial line, exit.
-	if (!_serial.read(buffer, 32, &r))
-	  {
-	    std::cerr << "Error during serial.read" << std::endl;
-	    return false;
-	  }
-      
-	// Fill the frame with the freshly received data
-	_pFrame->append(buffer, r);
-	
-	// Check if we got a complete frame
-	if (_pFrame->getFrame(_protocol.getBufferOut()))
-	  break ;
+  BYTE buffer[32];
+  // If an error occures on the serial line, exit.
+  if (!_serial.read(buffer, 32, &r))
+    {
+      std::cerr << "Error during serial.read" << std::endl;
+      return false;
+    }
+
+  // Fill the frame with the freshly received data
+  _pFrame->append(buffer, r);
+
+  // Check if we got a complete frame
+  if (_pFrame->getFrame(_protocol.getBufferOut()))
+    break ;
       }
 
     // Fill the wifibot data structure with this frame
@@ -569,15 +576,15 @@ namespace wifibot
     return true;
   }
 
-  // Read and print the wifibot latest wifibot data 
+  // Read and print the wifibot latest wifibot data
   driverData Driver::readData()
   {
     // Read the serial device, get a frame and fill the data structure
     if (!processRead())
       {
-	std::cerr << "Error in readData()" << std::endl;
+  std::cerr << "Error in readData()" << std::endl;
       }
-    
+
     // Get the structure
     return _protocol.getData();
   }
@@ -589,8 +596,8 @@ namespace wifibot
 
     if (!processWrite())
       {
-	std::cerr << "Error in setSpeeds()" << std::endl;
-	return false;
+  std::cerr << "Error in setSpeeds()" << std::endl;
+  return false;
       }
 
     return true;
@@ -603,7 +610,7 @@ namespace wifibot
 
     if (!processWrite())
       {
-	std::cerr << "Error in setPid()" << std::endl;
+  std::cerr << "Error in setPid()" << std::endl;
         return false;
       }
     return true;
@@ -622,11 +629,16 @@ namespace wifibot
     return true;
   }
 
+  void Driver::getRelays(bool & r1, bool & r2, bool & r3) const
+  {
+    _protocol.getRelays(r1, r2, r3);
+  }
+
   // Set loop control speed (will be applied on the next setSpeed() call)
   bool Driver::loopControlSpeed(double speed)
   {
     double s = _protocol.loopControlSpeed(speed);
-    
+
     return (s == speed);
   }
 

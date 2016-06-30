@@ -9,4 +9,6 @@ float64 speed_front_right
 float64 odometry_left
 float64 odometry_right
 int32 version
-int32 relay1
+int8 relay1
+int8 relay2
+int8 relay3

@@ -1,10 +1,21 @@
 #!/bin/sh
 # ensure the device is ready before launching the "hokuyo_node" driver
-
+DEVICE=/dev/ttyACM0
 set -e # stop at first error
 
-rosrun hokuyo_node getID /dev/ttyACM0
+while [ ! -c "$DEVICE" ]; do # wait for "character device" (-b) to appear
+  echo "Waiting for device $DEVICE to appear..."
+  sleep 2
+done
 
+sleep 10 # safety sleep
+
+#~ echo "Trying to get device ID $DEVICE..."
+#~ rosrun hokuyo_node getID $DEVICE
+#~
+#~ sleep 2 # safety sleep
+
+echo "Spawning laser driver for device $DEVICE..."
 # the hokuyo laser node, -120 degrees -> 120 degrees
 # sudo chmod a+rwx /dev/ttyACM0
 rosrun hokuyo_node hokuyo_node

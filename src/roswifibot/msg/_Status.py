@@ -6,7 +6,7 @@ import struct
 
 
 class Status(genpy.Message):
-  _md5sum = "37bcaf258748a50f0e114a698e6097e9"
+  _md5sum = "d55c85d21aaf2691ac6422ea4770a7d3"
   _type = "roswifibot/Status"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """float64 battery_level
@@ -20,11 +20,13 @@ float64 speed_front_right
 float64 odometry_left
 float64 odometry_right
 int32 version
-int32 relay1
+int8 relay1
+int8 relay2
+int8 relay3
 
 """
-  __slots__ = ['battery_level','current','ADC1','ADC2','ADC3','ADC4','speed_front_left','speed_front_right','odometry_left','odometry_right','version','relay1']
-  _slot_types = ['float64','float64','int32','int32','int32','int32','float64','float64','float64','float64','int32','int32']
+  __slots__ = ['battery_level','current','ADC1','ADC2','ADC3','ADC4','speed_front_left','speed_front_right','odometry_left','odometry_right','version','relay1','relay2','relay3']
+  _slot_types = ['float64','float64','int32','int32','int32','int32','float64','float64','float64','float64','int32','int8','int8','int8']
 
   def __init__(self, *args, **kwds):
     """
@@ -34,7 +36,7 @@ int32 relay1
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       battery_level,current,ADC1,ADC2,ADC3,ADC4,speed_front_left,speed_front_right,odometry_left,odometry_right,version,relay1
+       battery_level,current,ADC1,ADC2,ADC3,ADC4,speed_front_left,speed_front_right,odometry_left,odometry_right,version,relay1,relay2,relay3
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -67,6 +69,10 @@ int32 relay1
         self.version = 0
       if self.relay1 is None:
         self.relay1 = 0
+      if self.relay2 is None:
+        self.relay2 = 0
+      if self.relay3 is None:
+        self.relay3 = 0
     else:
       self.battery_level = 0.
       self.current = 0.
@@ -80,6 +86,8 @@ int32 relay1
       self.odometry_right = 0.
       self.version = 0
       self.relay1 = 0
+      self.relay2 = 0
+      self.relay3 = 0
 
   def _get_types(self):
     """
@@ -94,7 +102,7 @@ int32 relay1
     """
     try:
       _x = self
-      buff.write(_struct_2d4i4d2i.pack(_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1))
+      buff.write(_struct_2d4i4di3b.pack(_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1, _x.relay2, _x.relay3))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -107,8 +115,8 @@ int32 relay1
       end = 0
       _x = self
       start = end
-      end += 72
-      (_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1,) = _struct_2d4i4d2i.unpack(str[start:end])
+      end += 71
+      (_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1, _x.relay2, _x.relay3,) = _struct_2d4i4di3b.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -122,7 +130,7 @@ int32 relay1
     """
     try:
       _x = self
-      buff.write(_struct_2d4i4d2i.pack(_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1))
+      buff.write(_struct_2d4i4di3b.pack(_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1, _x.relay2, _x.relay3))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -136,11 +144,11 @@ int32 relay1
       end = 0
       _x = self
       start = end
-      end += 72
-      (_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1,) = _struct_2d4i4d2i.unpack(str[start:end])
+      end += 71
+      (_x.battery_level, _x.current, _x.ADC1, _x.ADC2, _x.ADC3, _x.ADC4, _x.speed_front_left, _x.speed_front_right, _x.odometry_left, _x.odometry_right, _x.version, _x.relay1, _x.relay2, _x.relay3,) = _struct_2d4i4di3b.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = genpy.struct_I
-_struct_2d4i4d2i = struct.Struct("<2d4i4d2i")
+_struct_2d4i4di3b = struct.Struct("<2d4i4di3b")

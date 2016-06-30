@@ -70,6 +70,10 @@ Wifibot::Wifibot(const ros::NodeHandle& nh)
   _timeCurrent = ros::Time::now();
   _timeLast = ros::Time::now();
 
+  // get the engine started!
+  // we need to send at least once setSpeeds() to ensure the relays are turned on
+  _pDriver->setSpeeds(0,0);
+
   while (ros::ok())
     {
       ros::spinOnce();
@@ -147,7 +151,11 @@ void Wifibot::update()
   topicStatus.odometry_left = st.odometryLeft;
   topicStatus.odometry_right = st.odometryRight;
   topicStatus.version = st.version;
-  topicStatus.relay1 = 0;
+  bool r1, r2, r3;
+  _pDriver->getRelays(r1, r2, r3);
+  topicStatus.relay1 = r1;
+  topicStatus.relay2 = r2;
+  topicStatus.relay3 = r3;
 
   // publish status
   _pubStatus.publish(topicStatus);
