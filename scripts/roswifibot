@@ -2,21 +2,24 @@
 # /etc/init.d/roswifibot
 source /opt/ros/fuerte/setup.bash
 export ROS_PACKAGE_PATH=/home/wifibot/ros:$ROS_PACKAGE_PATH
-#~ export ROS_IP=192.168.0.1
-ROS_USER=wifibot
 ROSLAUNCH_BIN="/opt/ros/fuerte/bin/roslaunch"
+LAUNCHDIR="/home/wifibot/ros/roswifibot/launch/"
 # set path to launchfile
 # carry out specific functions when asked by the system
 case "$1" in
   start)
     echo "Starting roswifibot service ..."
     rospack profile
-    #~ su -c "$ROSLAUNCH_BIN /home/wifibot/ros/roswifibot/launch/robot_kinect_joy_launch.launch" $ROS_USER &
-    $ROSLAUNCH_BIN /home/wifibot/ros/roswifibot/launch/robot_kinect_joy_launch.launch &
+    $ROSLAUNCH_BIN $LAUNCHDIR/robot_launch.launch  \
+      $LAUNCHDIR/joy_teleop.launch \
+      $LAUNCHDIR/firewire.launch  \
+      $LAUNCHDIR/hokuyo.launch &
+    rosrun roswifibot beep.bash --odom --firewire --hokuyo &
     ;;
   stop)
-    pkill -f ros
     echo "Stopping roswifibot services ..."
+    beep -f 200 -r 3 # tut tut tut
+    pkill -f ros
     ;;
   restart)
     $0 stop
