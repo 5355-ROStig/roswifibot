@@ -57,16 +57,21 @@ Compile with rosmake (older versions of ROS, for instance fuerte):
 $ cd cmake ; bash package2rosmake.bash
 $ rosmake roswifibot
 ```
-Note: to revert the package back to catkin-compliant:
-
-```bash
-$ cd cmake ; bash package2catkin.bash
-```
 
 ROS Indigo + catkin
 -------------------
 
-Compile with catkin:
+1. Dependencies included in the Ubuntu packages
+
+Please run the [rosdep](http://docs.ros.org/independent/api/rosdep/html/) utility:
+
+```bash
+$ sudo apt-get install python-rosdep
+$ sudo rosdep init
+$ rosdep install roswifibot --ignore-src
+```
+
+2. Compile with [catkin_make](http://wiki.ros.org/catkin/commands/catkin_make):
 
 ```bash
 $ catkin_make --only-pkg-with-deps roswifibot
