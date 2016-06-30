@@ -1,8 +1,0 @@
-<launch>
-<include file="$(find roswifibot)/launch/robot_launch.launch" />
-<include file="$(find roswifibot)/launch/joy_teleop.launch" />
-<include file="$(find roswifibot)/launch/kinect.launch" />
-<include file="$(find roswifibot)/launch/firewire.launch" />
-<include file="$(find roswifibot)/launch/hokuyo.launch" />
-<node pkg="roswifibot" type="beep.sh" name="beep"/>
-</launch>

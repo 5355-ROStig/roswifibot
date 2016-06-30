@@ -1,4 +1,0 @@
-<launch>
-<node pkg="rviz" type="rviz" name="rviz" output="screen"
-      args="--display-config $(find roswifibot)/config/rviz_wifibot.vcg" />
-</launch>

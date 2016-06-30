@@ -15,11 +15,13 @@ case "$1" in
       $LAUNCHDIR/firewire.launch  \
       $LAUNCHDIR/hokuyo.launch &
     rosrun roswifibot beep.bash --odom --firewire --hokuyo &
+    log_action_end_msg $?
     ;;
   stop)
     echo "Stopping roswifibot services ..."
     beep -f 200 -r 3 # tut tut tut
     pkill -f ros
+    log_action_end_msg $?
     ;;
   restart)
     $0 stop
