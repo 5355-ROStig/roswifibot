@@ -112,7 +112,7 @@ namespace wifibot
     // Applied on next setSpeeds()
     double loopControlSpeed(double speed);
 
-    // Set relays status. (default: all off)
+    // Set relays status. (default: all on)
     // Applied on next setSpeeds()
     void setRelays(const bool *pRelays);
 

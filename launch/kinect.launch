@@ -1,7 +1,0 @@
-<launch>
-<include file="$(find openni_launch)/launch/openni.launch" />
-
-<!-- tf broadcaster -->
-<node pkg="tf" type="static_transform_publisher" name="kinect2base_broadcaster" output="screen"
-      args="-0.05 0 0.3  0 0 0  /base_frame /camera_link 100" />
-</launch>

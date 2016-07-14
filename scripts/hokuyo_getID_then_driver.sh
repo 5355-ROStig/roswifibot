@@ -8,12 +8,8 @@ while [ ! -c "$DEVICE" ]; do # wait for "character device" (-b) to appear
   sleep 2
 done
 
-sleep 10 # safety sleep
-
-#~ echo "Trying to get device ID $DEVICE..."
-#~ rosrun hokuyo_node getID $DEVICE
-#~
-#~ sleep 2 # safety sleep
+echo "Trying to get device ID $DEVICE..."
+rosrun hokuyo_node getID $DEVICE
 
 echo "Spawning laser driver for device $DEVICE..."
 # the hokuyo laser node, -120 degrees -> 120 degrees

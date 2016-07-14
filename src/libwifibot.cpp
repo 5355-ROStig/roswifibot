@@ -516,6 +516,9 @@ namespace wifibot
   {
     _pFrame = new Frame(22);
     _serial.open(device);
+    // get the engine started!
+    // we need to send at least once setSpeeds() to ensure the relays are turned on
+    setSpeeds(0, 0);
   }
 
   Driver::~Driver()
