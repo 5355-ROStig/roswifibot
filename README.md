@@ -1,3 +1,9 @@
+Updated by Chalmers 5355
+==========
+1. Removed "if (_updated)" to make sure it can run continuously by set a speed on /cmd_vel.
+2. Implemented IR distance data to the /IR topic. The unit is centimeter.
+
+
 roswifibot
 ==========
 

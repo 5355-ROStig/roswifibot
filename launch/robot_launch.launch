@@ -8,8 +8,8 @@
   <node pkg="roswifibot" type="wifibot_node" name="wifibot_node" required="true"
         output="screen"
         args="_port:=/dev/ttyS0
-              _base_frame:=$(arg robot)_base_frame
-              _odom_frame:=$(arg robot)_odom
+              _base_frame:=$(arg robot)base_frame
+              _odom_frame:=$(arg robot)odom
               _entrax:=.39
               _relay1:=true
               _relay2:=true

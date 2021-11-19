@@ -2,14 +2,13 @@
 #include "wifibot.h"
 #include "ros/ros.h"
 #include "roswifibot/Status.h"
+#include "roswifibot/IR.h"
 
 #define TWOPI (M_PI * 2)
-
+static roswifibot::Status topicStatus;
+static roswifibot::IR topicIR;
 Wifibot::Wifibot()
-  : _nh_private("~")
-  , _updated(false)
-  , _speedLeft(0.0)
-  , _speedRight(0.0)
+    : _nh_private("~"), _updated(false), _speedLeft(0.0), _speedRight(0.0)
 {
   // Parameters handler
   ros::NodeHandle pn("~");
@@ -54,12 +53,11 @@ Wifibot::Wifibot()
   _pDriver->loopControlSpeed(0.01);  // Default loop control speed
   _pDriver->setPid(0.8, 0.45, 0.0);  // Default PID values
   _pDriver->setTicsPerMeter(5312.0); // Adapt this value according your wheels size
-
   // Save initial position
   wifibot::driverData st = _pDriver->readData();
   _odometryLeftLast = st.odometryLeft;
   _odometryRightLast = st.odometryRight;
-
+  ROS_INFO("Read data from UART successfully.");
   _position.x = 0;
   _position.y = 0;
   _position.th = 0;
@@ -67,6 +65,7 @@ Wifibot::Wifibot()
   // Create topics
   _pubOdometry = _nh.advertise<nav_msgs::Odometry>("odom", 1);
   _pubStatus = _nh.advertise<roswifibot::Status>("status", 1);
+  _pubIR = _nh.advertise<roswifibot::IR>("IR", 1);
   _pubRobotBatteryVoltage = _nh.advertise<std_msgs::Float32>("robot_battery_voltage", 1);
   _pubComputerBatteryVoltage = _nh.advertise<std_msgs::Float32>("computer_battery_voltage", 1);
   _pubIsCharging = _nh.advertise<std_msgs::Bool>("is_charging", 1);
@@ -109,22 +108,23 @@ void Wifibot::computeOdometry(double left, double right)
   _odometryRightLast = right;
 }
 
-void Wifibot::velocityCallback(const geometry_msgs::TwistConstPtr& vel)
+void Wifibot::velocityCallback(const geometry_msgs::TwistConstPtr &vel)
 {
   //ROS_INFO("input : %0.3f | %0.3f", vel->linear.x, vel->angular.z);
 
   _speedLeft = vel->linear.x - (vel->angular.z * (_entrax / 2.0));
-  _speedRight =  vel->linear.x + (vel->angular.z * (_entrax / 2.0));
+  _speedRight = vel->linear.x + (vel->angular.z * (_entrax / 2.0));
   _updated = true;
 }
 
 void Wifibot::update()
 {
-  roswifibot::Status topicStatus;
 
   // Send speeds only if needed
-  if (_updated)
-    _pDriver->setSpeeds(_speedLeft, _speedRight);
+
+  /* Remove the if to make sure it can run continuously by set /cmd_vel */
+  //if (_updated)
+  _pDriver->setSpeeds(_speedLeft, _speedRight);
   _updated = false;
 
   // get data from driver
@@ -135,10 +135,14 @@ void Wifibot::update()
   // Fill status topic
   topicStatus.battery_level = st.voltage;
   topicStatus.current = st.current; // see libwifibot to adapt this value
-  topicStatus.ADC1 = st.adc[0];
-  topicStatus.ADC2 = st.adc[1];
-  topicStatus.ADC3 = st.adc[2];
-  topicStatus.ADC4 = st.adc[3];
+  if (st.adc[0] < 210 && st.adc[0] > 40)
+    topicStatus.ADC1 = st.adc[0];
+  if (st.adc[1] < 210 && st.adc[1] > 40)
+    topicStatus.ADC2 = st.adc[1];
+  if (st.adc[2] < 210 && st.adc[2] > 40)
+    topicStatus.ADC3 = st.adc[2];
+  if (st.adc[3] < 210 && st.adc[3] > 40)
+    topicStatus.ADC4 = st.adc[3];
 
   topicStatus.speed_front_left = st.speedFrontLeft;
   topicStatus.speed_front_right = st.speedFrontRight;
@@ -156,6 +160,19 @@ void Wifibot::update()
   if (_pubStatus.getNumSubscribers())
     _pubStatus.publish(topicStatus);
 
+  // Handling IR data
+  if (st.adc[0] < 210 && st.adc[0] > 40)
+    topicIR.IR_front_left = (60.374 * pow(((float)st.adc[0] / 255) * 3.3, -1.16));
+  if (st.adc[1] < 210 && st.adc[1] > 40)
+    topicIR.IR_back_left = (60.374 * pow(((float)st.adc[1] / 255) * 3.3, -1.16));
+  if (st.adc[2] < 210 && st.adc[2] > 40)
+    topicIR.IR_front_right = (60.374 * pow(((float)st.adc[2] / 255) * 3.3, -1.16));
+  if (st.adc[3] < 210 && st.adc[3] > 40)
+    topicIR.IR_back_right = (60.374 * pow(((float)st.adc[3] / 255) * 3.3, -1.16));
+
+  // publish IR data
+  if (_pubIR.getNumSubscribers())
+    _pubIR.publish(topicIR);
   // compute position
   computeOdometry(st.odometryLeft, st.odometryRight);
 
@@ -171,8 +188,7 @@ void Wifibot::update()
       tf::createQuaternionMsgFromYaw(_position.th);
 
   //send the transform
-  _odomBroadcast.sendTransform(_odomTf);
-
+  //_odomBroadcast.sendTransform(_odomTf);
 
   //TOPIC, we'll publish the odometry message over ROS
   nav_msgs::Odometry odometryTopic;
@@ -189,10 +205,10 @@ void Wifibot::update()
   //set the velocity
   odometryTopic.child_frame_id = _frameBase;
   odometryTopic.twist.twist.linear.x = getSpeedLinear(
-        st.speedFrontLeft, st.speedFrontRight);
+      st.speedFrontLeft, st.speedFrontRight);
   odometryTopic.twist.twist.linear.y = 0.0;
   odometryTopic.twist.twist.angular.z = getSpeedAngular(
-        st.speedFrontLeft, st.speedFrontRight);
+      st.speedFrontLeft, st.speedFrontRight);
 
   /*
   ROS_INFO("lin:%0.3f ang:%0.3f",
@@ -207,7 +223,8 @@ void Wifibot::update()
   // BATTERIES
   std_msgs::Float32 batt_voltage;
   batt_voltage.data = st.voltage;
-  if (_batteryMinVoltage > st.voltage) {
+  if (_batteryMinVoltage > st.voltage)
+  {
     _nh.setParam("robot_battery_min_voltage", st.voltage);
     _nh.setParam("computer_battery_min_voltage", st.voltage);
     _batteryMinVoltage = st.voltage;
@@ -232,11 +249,13 @@ void Wifibot::update()
   _timeLast = _timeCurrent;
 }
 
-int main (int argc, char **argv) {
+int main(int argc, char **argv)
+{
   ros::init(argc, argv, "wifibot_node");
   Wifibot robot;
   ros::Rate r(100);
-  while (ros::ok()) {
+  while (ros::ok())
+  {
     ros::spinOnce();
     robot.update();
     r.sleep();

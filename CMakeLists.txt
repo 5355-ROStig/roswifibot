@@ -9,6 +9,7 @@ SET(ROSDEPS message_generation roscpp std_msgs tf
 find_package(catkin REQUIRED COMPONENTS ${ROSDEPS})
 ### 4 - Message/Service/Action Generators (add_message_files(), add_service_files(), add_action_files())
 add_message_files(DIRECTORY msg FILES Status.msg )
+add_message_files(DIRECTORY msg FILES IR.msg )
 ### 5 - Invoke message/service/action generation (generate_messages())
 generate_messages(
   DEPENDENCIES std_msgs

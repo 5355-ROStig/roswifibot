@@ -36,6 +36,7 @@ private:
   wifibot::Driver *_pDriver;
 
   ros::Publisher _pubStatus;
+   ros::Publisher _pubIR;
   ros::Publisher _pubOdometry;
   ros::Publisher _pubRobotBatteryVoltage, _pubComputerBatteryVoltage;
   ros::Publisher _pubIsCharging;
