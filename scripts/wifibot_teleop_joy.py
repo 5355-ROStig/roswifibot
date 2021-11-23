@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2009, Willow Garage, Inc.
@@ -50,11 +50,16 @@ def mycallback(joy):
   #~ vel.linear.x = (joy.axes[1] * 1.0);
   #~ vel.angular.z = (joy.axes[0] * (3.14 * 2));
   # 25/11/2015 : lowering gain
-  gain = 0.1;
+
+  gain = 0.1
   if (joy.buttons[7]): # turbo mode
-      gain = 0.5;
-  vel.linear.x = (joy.axes[1] * gain);
-  vel.angular.z = (joy.axes[0] * (3.14 * 2 * gain));
+      gain = 0.5
+
+  if (joy.axes[2] != -1):  # Dead-man's switch not pressed
+      gain = 0
+
+  vel.linear.x = (joy.axes[1] * gain)
+  vel.angular.z = (joy.axes[0] * (3.14 * 2 * gain))
 
   pub.publish(vel)
   #rospy.loginfo(vel)
@@ -70,7 +75,7 @@ if __name__ == '__main__':
 #  a_scale = rospy.get_param('scale_angular', 2.0)
 
   sub = rospy.Subscriber("joy", sensor_msgs.msg.Joy, mycallback)
-  pub = rospy.Publisher("cmd_vel", geometry_msgs.msg.Twist)
+  pub = rospy.Publisher("cmd_vel", geometry_msgs.msg.Twist, queue_size=1)
 
   scale = 100
   rospy.spin()
