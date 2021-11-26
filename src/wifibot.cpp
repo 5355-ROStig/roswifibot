@@ -119,12 +119,10 @@ void Wifibot::velocityCallback(const geometry_msgs::TwistConstPtr &vel)
 
 void Wifibot::update()
 {
-
   // Send speeds only if needed
-
-  /* Remove the if to make sure it can run continuously by set /cmd_vel */
-  //if (_updated)
-  _pDriver->setSpeeds(_speedLeft, _speedRight);
+  if (_updated) {
+      _pDriver->setSpeeds(_speedLeft, _speedRight);
+  }
   _updated = false;
 
   // get data from driver
