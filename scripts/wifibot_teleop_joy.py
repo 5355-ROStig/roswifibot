@@ -45,6 +45,9 @@ from geometry_msgs.msg import Twist
 
 
 def mycallback(joy):
+  if (joy.axes[2] != -1):  # Dead-man's switch not pressed
+      return
+
   vel = geometry_msgs.msg.Twist()
 
   #~ vel.linear.x = (joy.axes[1] * 1.0);
@@ -54,9 +57,6 @@ def mycallback(joy):
   gain = 0.1
   if (joy.buttons[7]): # turbo mode
       gain = 0.5
-
-  if (joy.axes[2] != -1):  # Dead-man's switch not pressed
-      gain = 0
 
   vel.linear.x = (joy.axes[1] * gain)
   vel.angular.z = (joy.axes[0] * (3.14 * 2 * gain))
