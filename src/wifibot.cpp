@@ -52,7 +52,7 @@ Wifibot::Wifibot()
   _pDriver->setRelays(relay1, relay2, relay3);
   _pDriver->loopControlSpeed(0.01);  // Default loop control speed
   _pDriver->setPid(0.8, 0.45, 0.0);  // Default PID values
-  _pDriver->setTicsPerMeter(4030.0); // Adapt this value according your wheels size, previously 5312.0
+  _pDriver->setTicsPerMeter(2040.0); // Adapt this value according your wheels size, previously 5312.0
   // Save initial position
   wifibot::driverData st = _pDriver->readData();
   _odometryLeftLast = st.odometryLeft;
